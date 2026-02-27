@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/apiService';
-import { Search, Filter, Edit, Trash2 } from 'lucide-react';
+import { Search, Filter, Trash2 } from 'lucide-react';
 import './RequestList.css';
 
 function RequestList() {
@@ -55,7 +55,10 @@ function RequestList() {
 
     const handleStatusChange = async (id, newStatus) => {
         try {
-            await api.updateRequest(id, { estado: newStatus, fecha_cierre: newStatus === 'ATENDIDA' || newStatus === 'CERRADA_NO_PROCEDE' ? new Date().toISOString() : null });
+            await api.updateRequest(id, {
+                estado: newStatus,
+                fecha_cierre: newStatus === 'ATENDIDA' || newStatus === 'CERRADA_NO_PROCEDE' ? new Date().toISOString() : null
+            });
             loadData();
         } catch (error) {
             alert("No se pudo actualizar el estado");
@@ -138,7 +141,6 @@ function RequestList() {
                                 <th>Prioridad / Fechas</th>
                                 <th>Asignado A</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -155,14 +157,14 @@ function RequestList() {
                                         </div>
                                     </td>
                                     <td>
-                                        <div>{getPriorityBadge(req.priority)}</div>
+                                        <div>{getPriorityBadge(req.prioridad)}</div>
                                         <div className="crm-date-col mt-1">Límite: {req.fecha_limite_contacto ? new Date(req.fecha_limite_contacto).toLocaleDateString() : 'N/A'}</div>
                                     </td>
                                     <td>
                                         <div className="crm-type-col">{req.asignado_a_nombre || 'Sin asignar'}</div>
                                         <div className="crm-contact-sub">{req.ministerio_nombre || ''}</div>
                                     </td>
-                                    <td>
+                                    <td className="crm-status-cell">
                                         <select
                                             className={`crm-status-select ${req.estado.toLowerCase().replace(/_/g, '-')}`}
                                             value={req.estado}
@@ -173,14 +175,12 @@ function RequestList() {
                                             <option value="ATENDIDA">Atendida</option>
                                             <option value="CERRADA_NO_PROCEDE">Cerrada</option>
                                         </select>
-                                    </td>
-                                    <td>
                                         <button
-                                            className="crm-btn-icon crm-text-danger"
+                                            className="crm-btn-delete-inline"
                                             onClick={() => handleDelete(req.id)}
                                             title="Eliminar Solicitud"
                                         >
-                                            <Trash2 size={18} />
+                                            <Trash2 size={16} />
                                         </button>
                                     </td>
                                 </tr>
