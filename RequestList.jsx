@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/apiService';
 import { Search, Filter, Trash2 } from 'lucide-react';
 import './RequestList.css';
 
 function RequestList() {
+    const navigate = useNavigate();
     const [requests, setRequests] = useState([]);
     const [filteredRequests, setFilteredRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -89,8 +91,8 @@ function RequestList() {
         <div className="crm-list-page">
             <div className="crm-page-header">
                 <h2>Listado de Solicitudes Pastorales</h2>
-                <button className="crm-btn crm-btn-primary" onClick={() => window.location.href = '/crm/registrar'}>
-                    Nueva Solicitud
+                <button className="crm-btn crm-btn-primary" onClick={() => navigate('/registrar')}>
+                    + Nueva Solicitud
                 </button>
             </div>
 
@@ -177,10 +179,11 @@ function RequestList() {
                                         </select>
                                         <button
                                             className="crm-btn-delete-inline"
-                                            onClick={() => handleDelete(req.id)}
-                                            title="Eliminar Solicitud"
+                                            onClick={(e) => { e.stopPropagation(); handleDelete(req.id); }}
+                                            title="Eliminar registro"
+                                            aria-label="Eliminar"
                                         >
-                                            <Trash2 size={16} />
+                                            <Trash2 size={18} color="#ef4444" strokeWidth={2.5} />
                                         </button>
                                     </td>
                                 </tr>
