@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/apiService';
-import { Calendar, Filter, PieChart, BarChart2, Activity, Download } from 'lucide-react';
+import { Calendar, Filter, PieChart, BarChart2, Activity, Download, Users, Briefcase } from 'lucide-react';
 import { downloadCSV } from '../utils/exportCsv';
 import './Reports.css';
 
