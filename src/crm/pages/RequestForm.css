@@ -1,0 +1,120 @@
+/* RequestForm.css */
+.crm-form-page {
+    animation: fadeIn 0.4s ease;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.crm-form-container {
+    background-color: var(--crm-white);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    border: 1px solid var(--crm-border);
+}
+
+.crm-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.crm-form-row {
+    display: flex;
+    gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .crm-form-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
+
+.crm-form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.crm-form-group.full-width {
+    width: 100%;
+}
+
+.crm-form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--crm-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.crm-form-group label svg {
+    color: var(--crm-text-light);
+}
+
+.crm-form-group input,
+.crm-form-group select,
+.crm-form-group textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--crm-border);
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--crm-text-dark);
+    background-color: var(--crm-white);
+    transition: all 0.2s;
+    outline: none;
+}
+
+.crm-form-group input:focus,
+.crm-form-group select:focus,
+.crm-form-group textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.crm-form-group textarea {
+    resize: vertical;
+}
+
+/* Specific styling for select dropdowns to match inputs */
+.crm-form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+.crm-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--crm-border);
+}
+
+.crm-btn-outline {
+    background-color: transparent;
+    color: var(--crm-text-dark);
+    border: 1px solid var(--crm-border);
+}
+
+.crm-btn-outline:hover {
+    background-color: var(--crm-bg-body);
+}
+
+.crm-btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.crm-btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
