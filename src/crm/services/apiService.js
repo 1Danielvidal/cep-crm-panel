@@ -1,7 +1,6 @@
 // CRM Pastoral CEP - API Service
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5501/api';
 
-// Configura fetch para que lance error si no es ok
 async function fetchApi(url, options = {}) {
     const res = await fetch(`${API_BASE}${url}`, {
         ...options,
@@ -24,9 +23,6 @@ export const api = {
     async getPersonas() {
         return fetchApi('/personas');
     },
-    async getPersonaById(id) {
-        return fetchApi(`/personas/${id}`);
-    },
     async createPersona(data) {
         return fetchApi('/personas', { method: 'POST', body: JSON.stringify(data) });
     },
@@ -38,9 +34,6 @@ export const api = {
     async getRequests() {
         return fetchApi('/solicitudes');
     },
-    async getRequestById(id) {
-        return fetchApi(`/solicitudes/${id}`);
-    },
     async createRequest(data) {
         return fetchApi('/solicitudes', { method: 'POST', body: JSON.stringify(data) });
     },
@@ -51,14 +44,6 @@ export const api = {
         return fetchApi(`/solicitudes/${id}`, { method: 'DELETE' });
     },
 
-    // ---- SEGUIMIENTOS ----
-    async getSeguimientos(solicitudId) {
-        return fetchApi(`/seguimientos/solicitud/${solicitudId}`);
-    },
-    async createSeguimiento(data) {
-        return fetchApi('/seguimientos', { method: 'POST', body: JSON.stringify(data) });
-    },
-
     // ---- USUARIOS/MINISTERIOS ----
     async getUsuarios() {
         return fetchApi('/usuarios');
@@ -67,7 +52,7 @@ export const api = {
         return fetchApi('/ministerios');
     },
 
-    // ---- Lógicas de Negocio ----
+    // ---- ESTADÍSTICAS Y REPORTES ----
     async getDashboardStats() {
         return fetchApi('/stats/dashboard');
     },
