@@ -212,12 +212,12 @@ function RequestForm() {
                             <label>Asignar Seguimiento a:</label>
                             <select name="asignado_a_usuario_id" value={formData.asignado_a_usuario_id} onChange={handleChange}>
                                 <option value="">-- Sin asignar --</option>
-                                <option value="Pastor Daniel Vidal">Pastor Daniel Vidal</option>
-                                <option value="Ministro Mauro Cervantes">Ministro Mauro Cervantes</option>
-                                <option value="Lider Discipulador">Líder Discipulador</option>
-                                <option value="Secretaria CEP">Secretaria CEP</option>
-                                <option value="Ministerio de Evangelismo">Ministerio de Evangelismo</option>
-                                <option value="Anciano">Anciano</option>
+                                <option value="00000000-0000-0000-0000-000000000001">Pastor Daniel Vidal</option>
+                                <option value="00000000-0000-0000-0000-000000000002">Ministro Mauro Cervantes</option>
+                                <option value="00000000-0000-0000-0000-000000000003">Líder Discipulador</option>
+                                <option value="00000000-0000-0000-0000-000000000004">Secretaria CEP</option>
+                                <option value="00000000-0000-0000-0000-000000000005">Ministerio de Evangelismo</option>
+                                <option value="00000000-0000-0000-0000-000000000006">Anciano</option>
                             </select>
                         </div>
                     </div>
