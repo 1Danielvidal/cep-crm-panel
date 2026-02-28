@@ -212,7 +212,7 @@ function RequestForm() {
                             <label>Asignar Seguimiento a:</label>
                             <select name="asignado_a_usuario_id" value={formData.asignado_a_usuario_id} onChange={handleChange}>
                                 <option value="">-- Sin asignar --</option>
-                                {usuarios.map(u => (
+                                {Array.isArray(usuarios) && usuarios.map(u => (
                                     <option key={u.id} value={u.id}>{u.nombre_completo} ({u.rol})</option>
                                 ))}
                             </select>
@@ -243,7 +243,7 @@ function RequestForm() {
                     </div>
 
                     <div className="crm-form-actions">
-                        <button type="button" className="crm-btn crm-btn-outline" onClick={() => navigate('/crm/solicitudes')}>
+                        <button type="button" className="crm-btn crm-btn-outline" onClick={() => navigate('/solicitudes')}>
                             Cancelar
                         </button>
                         <button type="submit" className="crm-btn crm-btn-primary" disabled={loading}>

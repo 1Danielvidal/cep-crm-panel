@@ -118,7 +118,34 @@
     font-size: 0.875rem;
 }
 
-/* Status Select in Table */
+.crm-status-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.crm-btn-delete-inline {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    opacity: 1;
+    margin-left: 10px;
+}
+
+.crm-btn-delete-inline:hover {
+    background-color: #fca5a5;
+    color: white;
+    transform: scale(1.1);
+}
+
 .crm-status-select {
     padding: 0.25rem 1.5rem 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -146,10 +173,16 @@
     border-color: #bfdbfe;
 }
 
-.crm-status-select.completado {
+.crm-status-select.atendida {
     background-color: #f0fdf4;
     color: #15803d;
     border-color: #bbf7d0;
+}
+
+.crm-status-select.cerrada-no-procede {
+    background-color: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
 }
 
 .crm-actions-cell {

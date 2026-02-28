@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/apiService';
-import { Search, Filter, Edit, Trash2 } from 'lucide-react';
+import { Search, Filter, Trash2 } from 'lucide-react';
 import './RequestList.css';
 
 function RequestList() {
+    const navigate = useNavigate();
     const [requests, setRequests] = useState([]);
     const [filteredRequests, setFilteredRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -55,10 +57,24 @@ function RequestList() {
 
     const handleStatusChange = async (id, newStatus) => {
         try {
-            await api.updateRequest(id, { estado: newStatus, fecha_cierre: newStatus === 'ATENDIDA' || newStatus === 'CERRADA_NO_PROCEDE' ? new Date().toISOString() : null });
+            await api.updateRequest(id, {
+                estado: newStatus,
+                fecha_cierre: newStatus === 'ATENDIDA' || newStatus === 'CERRADA_NO_PROCEDE' ? new Date().toISOString() : null
+            });
             loadData();
         } catch (error) {
             alert("No se pudo actualizar el estado");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm("¿Estás seguro de que deseas eliminar esta solicitud? Esta acción no se puede deshacer.")) {
+            try {
+                await api.deleteRequest(id);
+                loadData();
+            } catch (error) {
+                alert("Error al eliminar la solicitud");
+            }
         }
     };
 
@@ -75,8 +91,8 @@ function RequestList() {
         <div className="crm-list-page">
             <div className="crm-page-header">
                 <h2>Listado de Solicitudes Pastorales</h2>
-                <button className="crm-btn crm-btn-primary" onClick={() => window.location.href = '/crm/registrar'}>
-                    Nueva Solicitud
+                <button className="crm-btn crm-btn-primary" onClick={() => navigate('/registrar')}>
+                    + Nueva Solicitud
                 </button>
             </div>
 
@@ -150,7 +166,7 @@ function RequestList() {
                                         <div className="crm-type-col">{req.asignado_a_nombre || 'Sin asignar'}</div>
                                         <div className="crm-contact-sub">{req.ministerio_nombre || ''}</div>
                                     </td>
-                                    <td>
+                                    <td className="crm-status-cell">
                                         <select
                                             className={`crm-status-select ${req.estado.toLowerCase().replace(/_/g, '-')}`}
                                             value={req.estado}
@@ -161,6 +177,14 @@ function RequestList() {
                                             <option value="ATENDIDA">Atendida</option>
                                             <option value="CERRADA_NO_PROCEDE">Cerrada</option>
                                         </select>
+                                        <button
+                                            className="crm-btn-delete-inline"
+                                            onClick={(e) => { e.stopPropagation(); handleDelete(req.id); }}
+                                            title="Eliminar registro"
+                                            aria-label="Eliminar"
+                                        >
+                                            <Trash2 size={18} color="#ef4444" strokeWidth={2.5} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
