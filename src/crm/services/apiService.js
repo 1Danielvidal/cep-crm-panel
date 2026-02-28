@@ -47,6 +47,9 @@ export const api = {
     async updateRequest(id, data) {
         return fetchApi(`/solicitudes/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
     },
+    async deleteRequest(id) {
+        return fetchApi(`/solicitudes/${id}`, { method: 'DELETE' });
+    },
 
     // ---- SEGUIMIENTOS ----
     async getSeguimientos(solicitudId) {
