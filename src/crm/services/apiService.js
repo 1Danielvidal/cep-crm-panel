@@ -1,65 +1,60 @@
-// CRM Pastoral CEP - API Service
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5501/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-// Configura fetch para que lance error si no es ok
-async function fetchApi(url, options = {}) {
-    const res = await fetch(`${API_BASE}${url}`, {
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...(options.headers || {})
+const fetchApi = async (endpoint, options = {}) => {
+    try {
+        const response = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            },
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Error en la petición');
         }
-    });
-
-    if (!res.ok) {
-        throw new Error(`API Error: ${res.statusText}`);
+        return await response.json();
+    } catch (error) {
+        console.error(`API Error (${endpoint}):`, error);
+        throw error;
     }
-
-    if (res.status === 204) return true;
-    return await res.json();
-}
+};
 
 export const api = {
-    // ---- PERSONA ----
+    // Personas
     async getPersonas() {
         return fetchApi('/personas');
     },
-    async getPersonaById(id) {
-        return fetchApi(`/personas/${id}`);
-    },
     async createPersona(data) {
-        return fetchApi('/personas', { method: 'POST', body: JSON.stringify(data) });
-    },
-    async updatePersona(id, data) {
-        return fetchApi(`/personas/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+        return fetchApi('/personas', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
     },
 
-    // ---- SOLICITUDES ----
+    // Solicitudes
     async getRequests() {
         return fetchApi('/solicitudes');
     },
-    async getRequestById(id) {
-        return fetchApi(`/solicitudes/${id}`);
-    },
     async createRequest(data) {
-        return fetchApi('/solicitudes', { method: 'POST', body: JSON.stringify(data) });
+        return fetchApi('/solicitudes', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
     },
     async updateRequest(id, data) {
-        return fetchApi(`/solicitudes/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+        return fetchApi(`/solicitudes/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
     },
     async deleteRequest(id) {
-        return fetchApi(`/solicitudes/${id}`, { method: 'DELETE' });
+        return fetchApi(`/solicitudes/${id}`, {
+            method: 'DELETE',
+        });
     },
 
-    // ---- SEGUIMIENTOS ----
-    async getSeguimientos(solicitudId) {
-        return fetchApi(`/seguimientos/solicitud/${solicitudId}`);
-    },
-    async createSeguimiento(data) {
-        return fetchApi('/seguimientos', { method: 'POST', body: JSON.stringify(data) });
-    },
-
-    // ---- USUARIOS/MINISTERIOS ----
+    // Usuarios y Ministerios
     async getUsuarios() {
         return fetchApi('/usuarios');
     },
@@ -67,10 +62,7 @@ export const api = {
         return fetchApi('/ministerios');
     },
 
-    // ---- Lógicas de Negocio ----
-    async getDashboardStats() {
-        return fetchApi('/stats/dashboard');
-    },
+    // Reportes
     async getReportes(query = '') {
         return fetchApi(`/reportes${query}`);
     },
