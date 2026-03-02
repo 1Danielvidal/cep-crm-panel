@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/apiService';
-import { Calendar, Filter, PieChart, BarChart2, Activity, Download, Users, Briefcase } from 'lucide-react';
+import { Calendar, Filter, PieChart, BarChart2, Activity, Download, Users, Briefcase, FileSpreadsheet } from 'lucide-react';
 import { downloadCSV } from '../utils/exportCsv';
+import { downloadExcel } from '../utils/excelUtils';
 import './Reports.css';
 
 function Reports() {
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [exportLoading, setExportLoading] = useState(false);
 
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
@@ -54,6 +56,51 @@ function Reports() {
         downloadCSV(dataToExport, 'Reporte_Carga_Pastoral.csv');
     };
 
+    const handleExportExcel = async () => {
+        setExportLoading(true);
+        try {
+            const data = await api.getReporteCompleto();
+            const fileName = `CRM_CEP_Reporte_Completo_${new Date().toISOString().split('T')[0]}`;
+            
+            // Traducir encabezados para el Excel
+            const mappingHeaders = {
+                fecha_creacion: 'Fecha Registro',
+                nombres: 'Nombres',
+                apellidos: 'Apellidos',
+                telefono: 'Teléfono',
+                email: 'Email',
+                direccion: 'Dirección',
+                barrio_ciudad: 'Barrio/Ciudad',
+                estado_espiritual: 'Estado Espiritual',
+                tipo_solicitud: 'Tipo Solicitud',
+                origen: 'Origen',
+                descripcion: 'Petición / Descripción',
+                prioridad: 'Prioridad',
+                estado: 'Estado Solicitud',
+                fecha_limite_contacto: 'Fecha Límite',
+                fecha_cierre: 'Fecha Cierre',
+                asignado_a: 'Asignado A',
+                ministerio_responsable: 'Ministerio Responsable',
+                notas_confidenciales: 'Notas del Servidor'
+            };
+
+            const dataMapped = data.map(row => {
+                let mapped = {};
+                Object.keys(mappingHeaders).forEach(key => {
+                    mapped[mappingHeaders[key]] = row[key];
+                });
+                return mapped;
+            });
+
+            downloadExcel(dataMapped, fileName);
+        } catch (error) {
+            console.error(error);
+            alert("No se pudo generar el Excel");
+        } finally {
+            setExportLoading(false);
+        }
+    };
+
     if (loading && !reportData) {
         return <div className="crm-loading-spinner">Generando Reportes Avanzados...</div>;
     }
@@ -62,9 +109,14 @@ function Reports() {
         <div className="crm-reports-page">
             <div className="crm-page-header">
                 <h2>Reportes y Analítica Pastoral</h2>
-                <button className="crm-btn crm-btn-outline" onClick={handleExport} disabled={!reportData || reportData.cargaPorUsuario.length === 0}>
-                    <Download size={16} /> Exportar Tabla a CSV
-                </button>
+                <div className="crm-header-actions">
+                    <button className="crm-btn crm-btn-secondary" onClick={handleExportExcel} disabled={exportLoading}>
+                        <FileSpreadsheet size={16} /> {exportLoading ? 'Generando...' : 'Exportar Todo a Excel'}
+                    </button>
+                    <button className="crm-btn crm-btn-outline" onClick={handleExport} disabled={!reportData || reportData.cargaPorUsuario.length === 0}>
+                        <Download size={16} /> Exportar Tabla Carga (CSV)
+                    </button>
+                </div>
             </div>
 
             <form className="crm-reports-filters shadow" onSubmit={handleFilter}>
