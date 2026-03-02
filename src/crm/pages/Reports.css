@@ -209,3 +209,55 @@
     color: #ef4444;
     font-weight: 500;
 }
+
+/* Header Actions */
+.crm-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.crm-btn-secondary {
+    background-color: #10b981; /* Verde para Excel */
+    color: white;
+}
+
+.crm-btn-secondary:hover:not(:disabled) {
+    background-color: #059669;
+}
+
+.crm-btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.crm-btn-outline {
+    background-color: transparent;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.crm-btn-outline:hover:not(:disabled) {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.crm-btn-outline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .crm-reports-grid {
+        grid-template-columns: 1fr;
+    }
+    .crm-header-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+    .crm-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
