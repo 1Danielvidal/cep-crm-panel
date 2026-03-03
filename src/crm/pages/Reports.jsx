@@ -1,8 +1,6 @@
-/* COPIA ESTE CÓDIGO PARA EL PANEL */
 import { useState, useEffect } from 'react';
 import { api } from '../services/apiService';
 import { Calendar, Filter, PieChart, BarChart2, Activity, Download, Users, Briefcase, FileSpreadsheet } from 'lucide-react';
-import { downloadCSV } from '../utils/exportCsv';
 import { downloadExcel } from '../utils/excelUtils';
 import './Reports.css';
 
@@ -29,7 +27,7 @@ function Reports() {
     const handleExportExcel = async () => {
         setExportLoading(true);
         try {
-            const data = await api.getReporteCompleto();
+            const data = await api.getReporteCompleto(); // Pide todos los datos
             const mapping = {
                 fecha_creacion: 'Fecha Registro', tipo_persona: 'Tipo Persona', nombres: 'Nombres', apellidos: 'Apellidos',
                 sexo: 'Sexo', fecha_nacimiento: 'Fecha Nacimiento', telefono_principal: 'Teléfono Principal',
@@ -42,27 +40,28 @@ function Reports() {
             };
             const mapped = data.map(r => {
                 let m = {};
-                Object.keys(mapping).forEach(k => { m[mapping[k]] = (k.includes('fecha') && r[k]) ? new Date(r[k]).toLocaleDateString() : (r[k] || ''); });
+                Object.keys(mapping).forEach(k => { 
+                    let val = r[k];
+                    if (k.includes('fecha') && val) try { val = new Date(val).toLocaleDateString(); } catch(e){}
+                    m[mapping[k]] = val || ''; 
+                });
                 return m;
             });
-            downloadExcel(mapped, `CRM_CEP_Sábana_Datos_${new Date().toISOString().split('T')[0]}`);
+            downloadExcel(mapped, `CRM_CEP_Exportación_${new Date().toISOString().split('T')[0]}`);
         } catch (e) { alert("Error al exportar"); } finally { setExportLoading(false); }
     };
 
     return (
         <div className="crm-reports-page">
             <div className="crm-page-header">
-                <h2>Reportes Pastorales</h2>
+                <h2>Cifras y Reportes Pastorales</h2>
                 <div className="crm-header-actions">
                     <button className="crm-btn crm-btn-primary" onClick={handleExportExcel} disabled={exportLoading}>
-                        <FileSpreadsheet size={16} /> {exportLoading ? 'Generando Sábana...' : 'Exportar Sábana de Datos (Excel)'}
-                    </button>
-                    <button className="crm-btn crm-btn-outline" onClick={() => downloadCSV(reportData.cargaPorUsuario, 'Carga.csv')}>
-                        <Download size={16} /> Resumen Carga (CSV)
+                        <FileSpreadsheet size={18} /> {exportLoading ? 'Exportando...' : 'Exportar'}
                     </button>
                 </div>
             </div>
-            {/* ... Resto del componente de filtros y gráficos ... */}
+            
             <form className="crm-reports-filters shadow" onSubmit={(e) => { e.preventDefault(); loadReports(); }}>
                 <input type="date" value={fechaInicio} onChange={e => setFechaInicio(e.target.value)} />
                 <input type="date" value={fechaFin} onChange={e => setFechaFin(e.target.value)} />
@@ -72,7 +71,8 @@ function Reports() {
                 </select>
                 <button type="submit" className="crm-btn crm-btn-primary">Filtrar</button>
             </form>
-            {reportData && (
+
+            {!reportData ? <div className="crm-loading-spinner">Cargando...</div> : (
                 <div className="crm-reports-grid">
                     <div className="crm-report-card shadow full-width">
                         <h3><Activity size={18} /> Resumen de Cumplimiento</h3>
@@ -82,6 +82,7 @@ function Reports() {
                             <div className="crm-compliance-stat main"><span>{reportData.cumplimiento.porcentaje_cumplimiento}%</span><label>Efectividad</label></div>
                         </div>
                     </div>
+                    {/* Más gráficos aquí... */}
                 </div>
             )}
         </div>
