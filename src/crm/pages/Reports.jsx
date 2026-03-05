@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/apiService';
 import { Calendar, Filter, PieChart, BarChart2, Activity, Download, Users, Briefcase, FileSpreadsheet } from 'lucide-react';
 import { downloadCSV } from '../utils/exportCsv';
-import { downloadExcel } from '../utils/excelUtils';
 import './Reports.css';
 
 function Reports() {
@@ -16,6 +15,7 @@ function Reports() {
     const [ministerioId, setMinisterioId] = useState('');
 
     useEffect(() => {
+        // Cargar filtros iniciales
         api.getMinisterios().then(setMinisterios).catch(console.error);
         loadReports();
     }, []);
@@ -42,20 +42,51 @@ function Reports() {
         loadReports();
     };
 
+    // Exportar tabla cruzada de carga pastoral
+    const handleExport = () => {
+        if (!reportData) return;
+        const dataToExport = reportData.cargaPorUsuario.map(row => ({
+            Usuario: row.usuario,
+            Ministerio: row.ministerio || 'Sin Especificar',
+            'Total Asignadas': row.total_asignadas,
+            'Pendientes/En Proceso': row.pendientes,
+            'Atendidas': row.atendidas
+        }));
+        downloadCSV(dataToExport, 'Reporte_Carga_Pastoral.csv');
+    };
+
     const handleExportExcel = async () => {
         setExportLoading(true);
         try {
             const data = await api.getReporteCompleto();
-            const fileName = `CRM_CEP_Exportación_${new Date().toISOString().split('T')[0]}`;
+            const fileName = `CRM_CEP_Reporte_Completo_${new Date().toISOString().split('T')[0]}.csv`;
 
+            // Traducir encabezados para el CSV (Sábana de datos completa)
             const mappingHeaders = {
-                fecha_creacion: 'Fecha Registro', tipo_persona: 'Tipo de Persona', nombres: 'Nombres', apellidos: 'Apellidos',
-                sexo: 'Sexo', fecha_nacimiento: 'Fecha Nacimiento', telefono_principal: 'Teléfono Principal', telefono_secundario: 'Teléfono Secundario',
-                email: 'Email', direccion: 'Dirección', barrio_ciudad: 'Barrio/Ciudad', estado_espiritual: 'Estado Espiritual',
-                invita_por: 'Invitado Por', fecha_primera_visita: 'Fecha 1ra Visita', notas_persona: 'Notas Generales Persona',
-                tipo_solicitud: 'Tipo Solicitud', origen: 'Origen del Registro', descripcion_solicitud: 'Petición / Descripción Detallada',
-                prioridad: 'Prioridad', estado: 'Estado de la Solicitud', fecha_limite_contacto: 'Fecha Límite Contacto',
-                fecha_cierre: 'Fecha de Cierre', asignado_a: 'Persona Asignada', ministerio_responsable: 'Ministerio Responsable',
+                fecha_creacion: 'Fecha Registro',
+                tipo_persona: 'Tipo de Persona',
+                nombres: 'Nombres',
+                apellidos: 'Apellidos',
+                sexo: 'Sexo',
+                fecha_nacimiento: 'Fecha Nacimiento',
+                telefono_principal: 'Teléfono Principal',
+                telefono_secundario: 'Teléfono Secundario',
+                email: 'Email',
+                direccion: 'Dirección',
+                barrio_ciudad: 'Barrio/Ciudad',
+                estado_espiritual: 'Estado Espiritual',
+                invita_por: 'Invitado Por',
+                fecha_primera_visita: 'Fecha 1ra Visita',
+                notas_persona: 'Notas Generales Persona',
+                tipo_solicitud: 'Tipo Solicitud',
+                origen: 'Origen del Registro',
+                descripcion_solicitud: 'Petición / Descripción Detallada',
+                prioridad: 'Prioridad',
+                estado: 'Estado de la Solicitud',
+                fecha_limite_contacto: 'Fecha Límite Contacto',
+                fecha_cierre: 'Fecha de Cierre',
+                asignado_a: 'Persona Asignada',
+                ministerio_responsable: 'Ministerio Responsable',
                 notas_seguimiento: 'Notas de Seguimiento (Servidor)'
             };
 
@@ -63,6 +94,7 @@ function Reports() {
                 let mapped = {};
                 Object.keys(mappingHeaders).forEach(key => {
                     let val = row[key];
+                    // Formatear fechas si existen
                     if (val && key.includes('fecha')) {
                         try { val = new Date(val).toLocaleDateString(); } catch (e) { }
                     }
@@ -71,9 +103,10 @@ function Reports() {
                 return mapped;
             });
 
-            downloadExcel(dataMapped, fileName);
+            downloadCSV(dataMapped, fileName);
         } catch (error) {
-            alert("No se pudo generar el Excel");
+            console.error(error);
+            alert("No se pudo generar la exportación");
         } finally {
             setExportLoading(false);
         }
@@ -89,7 +122,7 @@ function Reports() {
                 <h2>Cifras y Reportes Pastorales</h2>
                 <div className="crm-header-actions">
                     <button className="crm-btn crm-btn-primary" onClick={handleExportExcel} disabled={exportLoading} title="Exportar base de datos completa a Excel">
-                        <FileSpreadsheet size={18} /> {exportLoading ? 'Exportando...' : 'Exportar Sábana de Datos Completos'}
+                        <FileSpreadsheet size={18} /> {exportLoading ? 'Exportando...' : 'Exportar'}
                     </button>
                 </div>
             </div>
@@ -165,7 +198,7 @@ function Reports() {
 
                     {/* CUADRO 3: Gráfico Estados (Pipeline) */}
                     <div className="crm-report-card shadow min-h">
-                        <h3 className="crm-section-title"><BarChart2 size={18} /> Estado Actual de Solicitudes</h3>
+                        <h3 className="crm-section-title"><BarChart2 size={18} /> Estado Actual del Pipeline</h3>
                         <div className="crm-simple-bar-chart">
                             {reportData.distribucionEstado.map(item => {
                                 const max = Math.max(...reportData.distribucionEstado.map(d => parseInt(d.valor)));
@@ -251,6 +284,7 @@ function Reports() {
                             <p className="crm-text-muted">No hay asignaciones en este cruce de datos.</p>
                         )}
                     </div>
+
                 </div>
             )}
         </div>
