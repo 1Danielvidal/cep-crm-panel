@@ -42,20 +42,20 @@ function Dashboard() {
                     </div>
                 </div>
 
-                {/* 2. Pendientes Hoy */}
+                {/* 2. Pendientes Hoy -> Pendientes Totales */}
                 <div className="crm-stat-card">
                     <div className="crm-stat-icon red"><AlertTriangle size={24} /></div>
                     <div className="crm-stat-content">
-                        <h3>Pendientes Hoy</h3>
+                        <h3>Pendientes</h3>
                         <p>{stats?.pendientesHoy || 0}</p>
                     </div>
                 </div>
 
-                {/* 3. Pendientes Semana */}
+                {/* 3. Pendientes Semana -> En Proceso */}
                 <div className="crm-stat-card">
                     <div className="crm-stat-icon yellow"><Clock size={24} /></div>
                     <div className="crm-stat-content">
-                        <h3>Pendientes (Semana)</h3>
+                        <h3>En Proceso</h3>
                         <p>{stats?.pendientesSemana || 0}</p>
                     </div>
                 </div>
@@ -69,11 +69,11 @@ function Dashboard() {
                     </div>
                 </div>
 
-                {/* 5. Nuevas Visitas */}
+                {/* 5. Nuevas Visitas -> Total Visitas */}
                 <div className="crm-stat-card">
                     <div className="crm-stat-icon purple"><FilePlus size={24} /></div>
                     <div className="crm-stat-content">
-                        <h3>Nuevas Visitas</h3>
+                        <h3>Total Visitas</h3>
                         <p>{stats?.nuevasVisitas || 0}</p>
                     </div>
                 </div>
